@@ -80,7 +80,13 @@ public class Name extends Application {
 
 	class SelectGenderEventHandler implements EventHandler<ActionEvent> {
 		public void handle(ActionEvent e) {
-
+			RadioButton tmp = (RadioButton) e.getSource();
+			if (tmp.getText().equals("男性")) {
+				isMale = true;
+			}
+			else {
+				isMale = false;
+			}
 		}
 	}
 }
