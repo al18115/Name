@@ -13,6 +13,8 @@ public class ReadSqlite {
 
 	//データを取得
 	public String readSql(int number) {
+		String result = "";
+
 		try {
 			// JDBCドライバーの指定
 			Class.forName("org.sqlite.JDBC");
@@ -22,10 +24,13 @@ public class ReadSqlite {
 
 			String sql = "SELECT NAME FROM NAME WHERE ID = " + number;
 			Statement stmt = con.createStatement();
+			ResultSet rs = stmt.executeQuery(sql);
 
+			while (rs.next()) {
+				result = rs.getString("NAME");
+			}
 
-
-
+			stmt.close();
 			con.close();
 
 		} catch (ClassNotFoundException e) {
@@ -37,11 +42,12 @@ public class ReadSqlite {
 
 			e.printStackTrace();
 		}
-		return "";
+		return result;
 	}
 
 	//テーブル数を取得
 	public int getSize() {
+		int result = 0;
 		try {
 			// JDBCドライバーの指定
 			Class.forName("org.sqlite.JDBC");
@@ -51,6 +57,14 @@ public class ReadSqlite {
 
 			String sql = "SELECT count(*) FROM NAME";
 
+			Statement stmt = con.createStatement();
+			ResultSet rs = stmt.executeQuery(sql);
+
+			while (rs.next()) {
+				result = rs.getInt("count(*)");
+			}
+
+			stmt.close();
 
 			con.close();
 
@@ -63,6 +77,6 @@ public class ReadSqlite {
 
 			e.printStackTrace();
 		}
-		return 0;
+		return result;
 	}
 }
