@@ -45,7 +45,7 @@ public class ReadSqlite {
 		return result;
 	}
 
-	//テーブル数を取得
+	//レコード数を取得
 	public int getSize() {
 		int result = 0;
 		try {
@@ -65,7 +65,6 @@ public class ReadSqlite {
 			}
 
 			stmt.close();
-
 			con.close();
 
 		} catch (ClassNotFoundException e) {
