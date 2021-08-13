@@ -74,7 +74,13 @@ public class Name extends Application {
 	class CreateNameEventHandler implements EventHandler<ActionEvent> {
 		public void handle(ActionEvent e) {
 			ReadSqlite family = new ReadSqlite("family.db");
-		    lb.setText(family.readSql(rand.nextInt(family.getSize())) + " ");
+			ReadSqlite first;
+			if (isMale) {
+				first = new ReadSqlite("male.db");
+			}else {
+				first = new ReadSqlite("female.db");
+			}
+		    lb.setText(family.readSql(rand.nextInt(family.getSize())) + " " + first.readSql(rand.nextInt(first.getSize())));
 		}
 	}
 
