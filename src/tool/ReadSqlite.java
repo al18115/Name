@@ -12,9 +12,8 @@ public class ReadSqlite {
 	}
 
 	//データを取得
-	public String readSql(int number) {
-		String result = "";
-
+	public NameRuby readSql(String table , int number) {
+		NameRuby result = new NameRuby();
 		try {
 			// JDBCドライバーの指定
 			Class.forName("org.sqlite.JDBC");
@@ -22,12 +21,12 @@ public class ReadSqlite {
 			// データベースに接続する なければ作成される
 			Connection con = DriverManager.getConnection(dbName);
 
-			String sql = "SELECT NAME FROM NAME WHERE ID = " + number;
+			String sql = "SELECT * FROM " + table + " WHERE ID = " + number;
 			Statement stmt = con.createStatement();
 			ResultSet rs = stmt.executeQuery(sql);
 
 			while (rs.next()) {
-				result = rs.getString("NAME");
+				result.insert(rs.getString("NAME"), rs.getString("RUBY"));
 			}
 
 			stmt.close();
@@ -46,7 +45,7 @@ public class ReadSqlite {
 	}
 
 	//レコード数を取得
-	public int getSize() {
+	public int getSize(String table) {
 		int result = 0;
 		try {
 			// JDBCドライバーの指定
@@ -55,7 +54,7 @@ public class ReadSqlite {
 			// データベースに接続する なければ作成される
 			Connection con = DriverManager.getConnection(dbName);
 
-			String sql = "SELECT count(*) FROM NAME";
+			String sql = "SELECT count(*) FROM " + table;
 
 			Statement stmt = con.createStatement();
 			ResultSet rs = stmt.executeQuery(sql);

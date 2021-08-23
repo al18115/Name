@@ -15,7 +15,10 @@ import tool.*;
 
 public class Name extends Application {
 	private Button bt;
-	private Label lb;
+	private Label nameFamily;
+	private Label rubyFamily;
+	private Label nameFirst;
+	private Label rubyFirst;
 	private RadioButton rb1, rb2;
 	private ToggleGroup tg;
 
@@ -33,7 +36,15 @@ public class Name extends Application {
 		bt = new Button("生成");
 
 		//ラベル
-		lb = new Label("");
+		nameFamily = new Label("");
+	    nameFamily.setFont(Font.font("SansSerif", 50));
+		nameFirst = new Label("");
+	    nameFirst.setFont(Font.font("SansSerif", 50));
+
+	    rubyFamily = new Label("");
+	    rubyFamily.setFont(Font.font("SansSerif", 25));
+	    rubyFirst = new Label("");
+	    rubyFirst.setFont(Font.font("SansSerif", 25));
 
 		//ラジオボタン
 		rb1 = new RadioButton("男性");
@@ -48,16 +59,25 @@ public class Name extends Application {
 		//ペインの作成
 		BorderPane bp = new BorderPane();
 		HBox hb = new HBox();
+		GridPane gp = new GridPane();
 
 		//ペインへの追加
 		hb.getChildren().add(rb1);
 		hb.getChildren().add(rb2);
 		hb.getChildren().add(bt);
 
+		gp.add(rubyFamily, 0, 0);
+		gp.add(new Label("  "), 1, 0);
+		gp.add(rubyFirst, 2, 0);
+		gp.add(nameFamily, 0, 1);
+		gp.add(new Label("   "), 1, 1);
+		gp.add(nameFirst, 2, 1);
+
 		hb.setAlignment(Pos.CENTER);
+		gp.setAlignment(Pos.CENTER);
 
 		bp.setTop(hb);
-		bp.setCenter(lb);
+		bp.setCenter(gp);
 
 		//イベント
 		bt.setOnAction(new CreateNameEventHandler());
@@ -74,17 +94,33 @@ public class Name extends Application {
 	//名前生成
 	class CreateNameEventHandler implements EventHandler<ActionEvent> {
 		public void handle(ActionEvent e) {
-			ReadSqlite family = new ReadSqlite("family.db");
-			ReadSqlite first;
+			ReadSqlite nameSql = new ReadSqlite("name.db");
+			String tableFamily = "FAMILY";
+			String tableFirst = "";
+			NameRuby familyRuby = new NameRuby();
+			NameRuby firstRuby = new NameRuby();
+
 			if (isMale) {
 				//男性
-				first = new ReadSqlite("male.db");
+				tableFirst = "MALE";
+
 			}else {
 				//女性
-				first = new ReadSqlite("female.db");
+				tableFirst = "FEMALE";
 			}
-		    lb.setText(family.readSql(rand.nextInt(family.getSize())) + " " + first.readSql(rand.nextInt(first.getSize())));
-		    lb.setFont(Font.font("SansSerif", 50));
+			//乱数生成
+			int firstRand =  rand.nextInt(nameSql.getSize(tableFirst));
+			int familyRand = rand.nextInt(nameSql.getSize(tableFamily));
+
+			//データベース読み出し
+			familyRuby = nameSql.readSql(tableFamily, familyRand);
+			firstRuby = nameSql.readSql(tableFirst, firstRand);
+
+			//ラベル更新
+		    nameFamily.setText(familyRuby.getName());
+		    nameFirst.setText(firstRuby.getName());
+		    rubyFamily.setText(familyRuby.getRuby());
+		    rubyFirst.setText(firstRuby.getRuby());
 		}
 	}
 
